@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+/*
+  スマホ対応の修正方針
+  - 固定幅(1000px / 880px など)を最大幅(max-width)に変え、画面に合わせて縮むようにした
+  - float による横並びを flex / grid に置き換え、スマホでは縦に並べる
+  - パソコンでの見た目は修正前と同じになるよう、数値は元の値を使っている
+*/
+
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
@@ -16,23 +25,28 @@ body {
   padding: 6px 16px;
   font-family: sans-serif;
 }
+.sample-bar a { color: #fff; }
 
 #wrapper {
-  width: 1000px;
+  max-width: 1000px;
   margin: 0 auto;
   background: #fff;
 }
 
 #header {
-  height: 90px;
+  min-height: 90px;
   padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
 }
 .logo {
-  float: left;
   font-size: 28px;
   font-weight: bold;
-  line-height: 90px;
   color: #6b4f36;
+  padding: 18px 0;
 }
 .logo span {
   font-size: 11px;
@@ -41,11 +55,11 @@ body {
   color: #a08a74;
 }
 .header-tel {
-  float: right;
   text-align: right;
-  padding-top: 22px;
   font-size: 12px;
+  padding: 12px 0;
 }
+.header-tel a { color: inherit; text-decoration: none; }
 .header-tel strong {
   font-size: 24px;
   color: #6b4f36;
@@ -56,14 +70,10 @@ body {
   padding: 0;
   list-style: none;
   background: #6b4f36;
-  height: 48px;
-  white-space: nowrap;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
 }
-#nav li {
-  float: left;
-  width: 166px;
-  text-align: center;
-}
+#nav li { text-align: center; }
 #nav a {
   display: block;
   line-height: 48px;
@@ -73,15 +83,13 @@ body {
 #nav a:hover { background: #57402b; }
 
 #main-visual {
-  width: 1000px;
   height: 420px;
   background: linear-gradient(160deg, #c9b79c, #8c7355);
-  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 80px;
 }
 #main-visual p {
-  position: absolute;
-  top: 130px;
-  left: 80px;
   margin: 0;
   font-size: 40px;
   line-height: 1.6;
@@ -99,39 +107,45 @@ body {
   margin: 0 0 30px;
   padding-bottom: 10px;
   border-bottom: 2px solid #6b4f36;
-  width: 300px;
+  max-width: 300px;
 }
 
-.col-left { float: left; width: 360px; }
-.col-right { float: right; width: 480px; line-height: 2; }
+#concept {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  column-gap: 40px;
+}
+#concept h2 { grid-column: 1 / -1; }
+.col-right { line-height: 2; min-width: 0; }
 .col-right p { margin: 0 0 16px; }
-.clear { clear: both; }
+.clear { display: none; }
 .concept-photo {
-  width: 360px;
-  height: 260px;
+  max-width: 100%;
+  aspect-ratio: 360 / 260;
   background: #d8ccbb;
-  line-height: 260px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #8c7355;
 }
 
 .works-table {
-  width: 880px;
+  width: 100%;
   border-collapse: collapse;
 }
 .works-table th, .works-table td {
   border: 1px solid #e5ddd1;
   padding: 10px;
   text-align: left;
-  white-space: nowrap;
 }
-.works-table th { background: #f5f0e8; }
+.works-table th { background: #f5f0e8; white-space: nowrap; }
 .thumb {
   width: 120px;
   height: 80px;
   background: #d8ccbb;
-  line-height: 80px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #8c7355;
 }
 
@@ -139,29 +153,25 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
-  width: 880px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
 }
 .flow-list li {
-  float: left;
-  width: 160px;
-  height: 100px;
-  margin-right: 20px;
+  min-height: 100px;
   background: #f5f0e8;
   text-align: center;
-  padding-top: 20px;
-  box-sizing: border-box;
+  padding: 20px 8px;
 }
-.flow-list li:last-child { margin-right: 0; }
 .flow-list span {
   display: block;
   font-size: 11px;
   color: #a08a74;
   margin-bottom: 6px;
 }
-#flow::after { content: ""; display: block; clear: both; }
 
 .company-table {
-  width: 880px;
+  width: 100%;
   border-collapse: collapse;
 }
 .company-table th, .company-table td {
@@ -170,6 +180,7 @@ body {
   text-align: left;
 }
 .company-table th { width: 160px; color: #6b4f36; }
+.company-table a { color: inherit; }
 
 #footer {
   background: #3b2f25;
@@ -177,4 +188,83 @@ body {
   text-align: center;
   font-size: 11px;
   padding: 20px 0;
+}
+
+/* スマホで画面下に固定する電話ボタン（パソコンでは表示しない） */
+.sp-call { display: none; }
+
+/* ===== タブレット・スマホ ===== */
+@media (max-width: 768px) {
+  body { font-size: 15px; }
+
+  #header { padding: 0 16px; }
+  .logo { font-size: 22px; padding: 14px 0 0; }
+  .logo span { display: block; margin-left: 0; }
+  .header-tel { display: none; } /* 画面下の電話ボタンに置き換える */
+
+  #nav { grid-template-columns: repeat(3, 1fr); }
+  #nav a { line-height: 1.4; padding: 12px 4px; font-size: 13px; border: 1px solid #7d6147; }
+
+  #main-visual { height: 240px; padding-left: 24px; }
+  #main-visual p { font-size: 26px; }
+
+  .section { padding: 36px 16px; }
+  .section h2 { font-size: 20px; }
+
+  #concept { grid-template-columns: 1fr; row-gap: 20px; }
+
+  /* 施工事例：表を1件ずつのカードに組み替える */
+  .works-table, .works-table tbody, .works-table tr, .works-table td { display: block; }
+  .works-table tr:first-child { display: none; }
+  .works-table tr {
+    border: 1px solid #e5ddd1;
+    margin-bottom: 16px;
+  }
+  .works-table td {
+    border: none;
+    border-bottom: 1px solid #f0ebe3;
+    display: grid;
+    grid-template-columns: 6em 1fr;
+    gap: 8px;
+  }
+  .works-table td:last-child { border-bottom: none; }
+  .works-table td::before {
+    content: attr(data-label);
+    color: #a08a74;
+    font-size: 13px;
+  }
+  .works-table td:first-child { display: block; padding: 0; }
+  .thumb { width: 100%; height: 160px; }
+
+  .flow-list { grid-template-columns: 1fr; gap: 8px; }
+  .flow-list li {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    padding: 14px 16px;
+  }
+  .flow-list span { margin-bottom: 0; }
+
+  .company-table th { width: 6em; vertical-align: top; }
+
+  #footer { padding-bottom: 84px; } /* 固定の電話ボタンに隠れないよう余白を追加 */
+
+  .sp-call {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #b5572f;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    font-family: sans-serif;
+    z-index: 10;
+  }
 }
